@@ -1,0 +1,26 @@
+{
+  "name": "@joneff/baka",
+  "version": "0.0.1",
+  "description": "Dead stupid sass inline importer (inliner)",
+  "repository": "joneff/baka",
+  "bugs": {
+    "url": "https://github.com/joneff/baka/issues"
+  },
+  "author": "",
+  "license": "ISC",
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {},
+  "devDependencies": {},
+  "keywords": [
+    "sass",
+    "inliner",
+    "importer",
+    "inline importer"
+  ]
+}
