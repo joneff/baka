@@ -1,9 +1,9 @@
-// #= import _partial.scss
-// #= import file.scss
-// #= import folder/file.scss
-// #= import_once once.scss
-// #= import twice.scss
-// #= import folder/thrice.scss
+@import "_partial.scss";
+@import "file.scss";
+@import "folder/file.scss";
+@import "once.scss";
+@import "twice.scss";
+@import "folder/thrice.scss";
 
 body {
     color: red;

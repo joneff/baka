@@ -1,9 +1,10 @@
 const path = require('path');
 const baka = require('../index.js');
 
-const base = path.join(__dirname, 'scss');
+const src = path.join(__dirname, 'src');
+const dist = path.join(__dirname, 'dist');
 
-const file = path.join(base, 'index.scss');
-// const outFile = path.join(base, 'all.scss');
+const file = path.join(src, 'index.scss');
+const outFile = path.join(dist, 'all.scss');
 
-baka.compile(file);
+baka.compile(file, outFile);

@@ -1,56 +1,50 @@
 const fs = require('fs');
 const path = require('path');
 
-const reImport = /^\/\/ #= (import|import_once) (.*?)$/gm;
+const reImport = /^[ \t]*@import\s+["']?(.*?)["']?;?$/gm;
 const importedFiles = new Set();
-const importedOnceFiles = new Set();
-let currentPath;
+const importedPaths = [];
 const process_cwd = process.cwd(); // eslint-disable-line camelcase
 
 
 const parse = (url, root = false) => {
+
+    if (importedFiles.has( url )) {
+        return [
+            `// #region @import ${url.replace(process_cwd, '').replace(/\\/g, '/')}`,
+            '// File already imported_once. Skipping output.',
+            '// #endregion'
+        ].join('\n');
+    }
+
     const buffer = fs.readFileSync(url, 'utf8');
     let output = '';
 
-    currentPath = path.dirname( url );
+    importedPaths.push(path.dirname( url ));
     importedFiles.add( url );
 
     if (root === true) {
-        output += [
+        output = [
             '// This file is auto-generated. Do not edit!',
-            `// Origin .${path.dirname( url ).replace(process_cwd, '').replace(/\\/g, '/')}/${path.basename( url )}`,
+            `// Origin ${url.replace(process_cwd, '').replace(/\\/g, '/')}}`,
             '\n'
         ].join('\n');
     }
 
     output += buffer.replace(reImport, importReplacer);
 
+    importedPaths.pop();
+
     return output;
 };
 
-const importReplacer = (match, importType, file) => {
+const importReplacer = (match, file) => {
+    const url = path.join( importedPaths[importedPaths.length - 1], file );
     let output = [];
-    const toBeImportedFile = path.join( currentPath, file );
 
-    output.push(match);
-
-    output.push(`// #region ${importType} .${currentPath.replace(process_cwd, '').replace(/\\/g, '/')}/${file}`);
-
-    output.push(
-        (
-            importedOnceFiles.has(toBeImportedFile)
-            ||
-            (importType === 'import_once' && importedFiles.has(toBeImportedFile))
-        )
-            ? '// File already imported_once. Skipping output.'
-            : parse( toBeImportedFile )
-    );
-
+    output.push(`// #region @import ${url.replace(process_cwd, '').replace(/\\/g, '/')}`);
+    output.push( parse( url ) );
     output.push('// #endregion');
-
-    if (importType === 'import_once') {
-        importedOnceFiles.add(toBeImportedFile);
-    }
 
     return output.join('\n');
 };
@@ -67,7 +61,7 @@ const compile = (file, outFile) => { // eslint-disable-line consistent-return
                 process.exit(1);
             }
         }
-        console.info(`Inlineing ${file} to ${outFile}`); // eslint-disable-line no-console
+        console.info(`Inlining ${file} to ${outFile}`); // eslint-disable-line no-console
         fs.writeFileSync(outFile, output);
     } else {
         return output;
