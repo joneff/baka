@@ -15,8 +15,12 @@
   "directories": {
     "test": "test"
   },
-  "scripts": {},
-  "devDependencies": {},
+  "scripts": {
+    "lint": "eslint **/*.js"
+  },
+  "devDependencies": {
+    "eslint": "^6.5.0"
+  },
   "keywords": [
     "sass",
     "inliner",
