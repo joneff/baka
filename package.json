@@ -18,7 +18,9 @@
     "ci": "npm run lint && npm run test",
     "lint": "eslint **/*.js",
     "test": "mocha",
-    "update-dependencies": "git submodule foreach git pull --rebase && cp ./submodules/sass-import-resolver/index.js ./import-resolver.js"
+    "update-dependencies": "git submodule foreach git pull --rebase && cp ./submodules/sass-import-resolver/index.js ./import-resolver.js",
+    "preversion": "npm run ci",
+    "postversion": "git push && git push --tags"
   },
   "devDependencies": {
     "@progress/kendo-theme-default": "^4.3.3",
