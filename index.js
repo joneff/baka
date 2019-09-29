@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const importResolver = require('./import-resolver');
+
 const reImport = /^[ \t]*@import\s+["']?(.*?)["']?;?$/gm;
 const importedFiles = new Set();
 const importedPaths = [];
@@ -26,7 +28,7 @@ const parse = (url, root = false) => {
     if (root === true) {
         output = [
             '// This file is auto-generated. Do not edit!',
-            `// Origin ${url.replace(process_cwd, '').replace(/\\/g, '/')}}`,
+            `// baka:source ${url.replace(process_cwd, '').replace(/\\/g, '/')}}`,
             '\n'
         ].join('\n');
     }
@@ -38,11 +40,11 @@ const parse = (url, root = false) => {
     return output;
 };
 
-const importReplacer = (match, file) => {
-    const url = path.join( importedPaths[importedPaths.length - 1], file );
+const importReplacer = (match, file) => { // eslint-disable-line no-unused-vars
+    const url = importResolver.resolve( file, importedPaths[ importedPaths.length - 1 ] );
     let output = [];
 
-    output.push(`// #region @import ${url.replace(process_cwd, '').replace(/\\/g, '/')}`);
+    output.push(`// #region ${match} -> ${url.replace(process_cwd, '').replace(/\\/g, '/')}`);
     output.push( parse( url ) );
     output.push('// #endregion');
 

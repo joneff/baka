@@ -10,13 +10,15 @@
   "license": "ISC",
   "main": "index.js",
   "files": [
-    "index.js"
+    "index.js",
+    "import-resolver.js"
   ],
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "lint": "eslint **/*.js"
+    "lint": "eslint **/*.js",
+    "update-dependencies": "git submodule foreach git pull --rebase && cp ./submodules/sass-import-resolver/index.js ./import-resolver.js"
   },
   "devDependencies": {
     "eslint": "^6.5.0"
