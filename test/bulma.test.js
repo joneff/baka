@@ -1,7 +1,8 @@
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
 const assert = require('assert');
 const suite = require('mocha').suite;
+const before = require('mocha').before;
 const context = require('mocha').describe;
 const test = require('mocha').test;
 const { del, buildSass } = require('./index');
@@ -13,6 +14,10 @@ const local = path.join(__dirname, 'local');
 
 
 suite('bulma', () => {
+
+    before(() => {
+        fs.mkdirpSync(dist);
+    });
 
     context('baka:full', () => {
 
