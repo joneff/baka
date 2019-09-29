@@ -17,6 +17,7 @@
     "test": "test"
   },
   "scripts": {
+    "ci": "npm run lint && npm run test",
     "lint": "eslint **/*.js",
     "test": "mocha",
     "update-dependencies": "git submodule foreach git pull --rebase && cp ./submodules/sass-import-resolver/index.js ./import-resolver.js"
