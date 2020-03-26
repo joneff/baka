@@ -9,6 +9,21 @@ const importedPaths = [];
 const process_cwd = process.cwd(); // eslint-disable-line camelcase
 
 
+// #region helpers
+const ensureDirSync = (dir) => {
+    dir.split(path.sep).reduce((acc, curr) => {
+        let dirPath = path.join(acc, curr);
+
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath);
+        }
+
+        return dirPath;
+    });
+};
+// #endregion
+
+
 const parse = (url, root = false) => {
 
     if (importedFiles.has( url )) {
@@ -58,12 +73,12 @@ const compile = (file, outFile) => { // eslint-disable-line consistent-return
         try {
             fs.accessSync(outFile, fs.constants.W_OK | fs.constants.R_OK);
         } catch (error) {
-            if (error.code !== 'ENOENT') {
-                console.error(error); // eslint-disable-line no-console
-                process.exit(1);
+            if (error.code === 'ENOENT') {
+                ensureDirSync(path.dirname(outFile));
+            } else {
+                throw error;
             }
         }
-        console.info(`Inlining ${file} to ${outFile}`); // eslint-disable-line no-console
         fs.writeFileSync(outFile, output);
     } else {
         return output;

@@ -25,7 +25,7 @@ const parse = (url) => {
     return output;
 };
 
-const importReplacer = (match, file) => {
+const importReplacer = (match, file) => { // eslint-disable-line no-unused-vars
     const url = path.join( importedPaths[importedPaths.length - 1], file );
     let output;
 
@@ -42,11 +42,9 @@ const compile = (file, outFile) => { // eslint-disable-line consistent-return
             fs.accessSync(outFile, fs.constants.W_OK | fs.constants.R_OK);
         } catch (error) {
             if (error.code !== 'ENOENT') {
-                // console.error(error);
-                process.exit(1);
+                throw error;
             }
         }
-        // console.info(`Inlining ${file} to ${outFile}`);
         fs.writeFileSync(outFile, output);
     } else {
         return output;
