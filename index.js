@@ -67,6 +67,7 @@ const importReplacer = (match, file) => { // eslint-disable-line no-unused-vars
 };
 
 const compile = (file, outFile) => { // eslint-disable-line consistent-return
+    importedFiles.clear();
     const output = parse(file, true);
 
     if (outFile) {
