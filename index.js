@@ -56,7 +56,7 @@ const parse = (url, root = false) => {
 };
 
 const importReplacer = (match, file) => { // eslint-disable-line no-unused-vars
-    const url = importResolver.resolve( file, importedPaths[ importedPaths.length - 1 ] );
+    const url = importResolver.resolve( file, { prev: importedPaths[ importedPaths.length - 1 ] } );
     let output = [];
 
     output.push(`// #region ${match} -> ${url.replace(process_cwd, '').replace(/\\/g, '/')}`);
