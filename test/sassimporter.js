@@ -4,13 +4,13 @@ const EMPTY_IMPORT = {};
 
 const imported = new Set();
 
-function sassImporterFactory(options = { cache: false }) {
+function sassImporterFactory(options = { cache: false, cwd: process.cwd() }) {
     function sassImporter(url, prev) {
         let file;
 
         if (url.startsWith('~')) {
             file = path.resolve(path.join(
-                process.cwd(),
+                options.cwd,
                 'node_modules/',
                 url.slice(1)
             ));

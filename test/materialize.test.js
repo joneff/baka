@@ -8,7 +8,7 @@ const test = require('mocha').test;
 const { del, buildSass } = require('./index');
 const baka = require('../index');
 
-const node_modules = path.join(process.cwd(), 'node_modules'); // eslint-disable-line camelcase
+const node_modules = path.join(__dirname, 'node_modules'); // eslint-disable-line camelcase
 const dist = path.join(__dirname, 'dist');
 const local = path.join(__dirname, 'local');
 
