@@ -24,7 +24,9 @@ const ensureDirSync = (dir) => {
 // #endregion
 
 
-const parse = (url, root = false) => {
+const parse = (url, options) => {
+
+    let root = options.root;
 
     if (importedFiles.has( url )) {
         return [
@@ -48,27 +50,29 @@ const parse = (url, root = false) => {
         ].join('\n');
     }
 
-    output += buffer.replace(reImport, importReplacer);
+    output += buffer.replace(reImport, (match, file) => {
+        return importReplacer(match, file, options);
+    });
 
     importedPaths.pop();
 
     return output;
 };
 
-const importReplacer = (match, file) => { // eslint-disable-line no-unused-vars
-    const url = importResolver.resolve( file, { prev: importedPaths[ importedPaths.length - 1 ] } );
+const importReplacer = (match, file, options) => { // eslint-disable-line no-unused-vars
+    const url = importResolver.resolve( file, { prev: importedPaths[ importedPaths.length - 1 ], nodeModules: options.nodeModules } );
     let output = [];
 
     output.push(`// #region ${match} -> ${url.replace(process_cwd, '').replace(/\\/g, '/')}`);
-    output.push( parse( url ) );
+    output.push( parse( url, { ...options, root: false } ) );
     output.push('// #endregion');
 
     return output.join('\n');
 };
 
-const compile = (file, outFile) => { // eslint-disable-line consistent-return
+const compile = (file, outFile, options) => { // eslint-disable-line consistent-return
     importedFiles.clear();
-    const output = parse(file, true);
+    const output = parse(file, { ...options, root: true });
 
     if (outFile) {
         try {
