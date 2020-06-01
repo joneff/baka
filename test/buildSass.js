@@ -22,7 +22,7 @@ const postcssPlugins = [
 const sassOptions = {
     precision: 10,
     outputStyle: 'expanded',
-    importer: sassImporterFactory({ cache: true })
+    importer: sassImporterFactory({ cache: true, cwd: __dirname })
 };
 const buildSass = async (src, dest) => { // eslint-disable-line space-before-function-paren
 
