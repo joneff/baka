@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const importResolver = require('./import-resolver');
+const importResolver = require('@joneff/sass-import-resolver');
 
 const reImport = /^[ \t]*@import\s+["']?(.*?)["']?;?$/gm;
 const importedFiles = new Set();

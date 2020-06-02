@@ -1,8 +1,6 @@
 # baka
 
-[baka] is a dead stupid inliner / importer for sass and scss files. Meaning after you run it, you'll end up with a single flattened sass or scss file with little to no* external depenedencies.
-
-\* baka uses [sass-import-resolver] internally, which in terms is based on [Sass `@import` documentation], which stipulates that explicitly declared imports of css files will not be processed. And external URLs, obviously.
+[baka] is a dead stupid inliner / importer for sass and scss files. Meaning after you run it, you'll end up with a single flattened sass or scss file with little external depenedencies.
 
 ## Installation
 

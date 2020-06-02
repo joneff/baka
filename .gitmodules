@@ -1,3 +1,0 @@
-[submodule "submodules/sass-import-resolver"]
-	path = submodules/sass-import-resolver
-	url = git@github.com:joneff/sass-import-resolver.git

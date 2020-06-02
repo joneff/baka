@@ -20,9 +20,11 @@
     "init-tests": "cd test && npm ci",
     "lint": "eslint **/*.js",
     "test": "mocha",
-    "update-dependencies": "git submodule foreach git pull --rebase && cp ./submodules/sass-import-resolver/index.js ./import-resolver.js",
     "preversion": "npm run ci",
     "postversion": "git push && git push --tags"
+  },
+  "dependencies": {
+    "@joneff/sass-import-resolver": "^0.3.1"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
