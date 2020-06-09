@@ -11,7 +11,7 @@ const process_cwd = process.cwd(); // eslint-disable-line camelcase
 
 // #region helpers
 const ensureDirSync = (dir) => {
-    let resolvedPath = path.resolve(dir);
+    let resolvedPath = path.normalize(dir);
 
     resolvedPath.split(path.sep).reduce((acc, curr) => {
         let dirPath = path.join(acc, curr);
