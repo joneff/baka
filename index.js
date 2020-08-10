@@ -77,15 +77,7 @@ const compile = (file, outFile, options) => { // eslint-disable-line consistent-
     const output = parse(file, { ...options, root: true });
 
     if (outFile) {
-        try {
-            fs.accessSync(outFile, fs.constants.W_OK | fs.constants.R_OK);
-        } catch (error) {
-            if (error.code === 'ENOENT') {
-                ensureDirSync(path.dirname(outFile));
-            } else {
-                throw error;
-            }
-        }
+        ensureDirSync(path.dirname(outFile));
         fs.writeFileSync(outFile, output);
     } else {
         return output;
