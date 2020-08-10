@@ -8,8 +8,7 @@
   "license": "ISC",
   "main": "index.js",
   "files": [
-    "index.js",
-    "import-resolver.js"
+    "index.js"
   ],
   "directories": {
     "test": "test"
