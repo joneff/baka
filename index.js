@@ -9,23 +9,6 @@ const importedPaths = [];
 const process_cwd = process.cwd(); // eslint-disable-line camelcase
 
 
-// #region helpers
-const ensureDirSync = (dir) => {
-    let resolvedPath = path.normalize(dir);
-
-    resolvedPath.split(path.sep).reduce((acc, curr) => {
-        let dirPath = path.join(acc, curr);
-
-        if (!fs.existsSync(dirPath)) {
-            fs.mkdirSync(dirPath);
-        }
-
-        return dirPath;
-    });
-};
-// #endregion
-
-
 const parse = (url, options) => {
 
     let root = options.root;
@@ -77,7 +60,8 @@ const compile = (file, outFile, options) => { // eslint-disable-line consistent-
     const output = parse(file, { ...options, root: true });
 
     if (outFile) {
-        ensureDirSync(path.dirname(outFile));
+        let dest = path.dirname(outFile);
+        fs.mkdirSync(dest, { recursive: true });
         fs.writeFileSync(outFile, output);
     } else {
         return output;

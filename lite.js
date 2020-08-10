@@ -39,13 +39,8 @@ const compile = (file, outFile) => { // eslint-disable-line consistent-return
     const output = parse(file, true);
 
     if (outFile) {
-        try {
-            fs.accessSync(outFile, fs.constants.W_OK | fs.constants.R_OK);
-        } catch (error) {
-            if (error.code !== 'ENOENT') {
-                throw error;
-            }
-        }
+        let dest = path.dirname(outFile);
+        fs.mkdirSync(dest, { recursive: true });
         fs.writeFileSync(outFile, output);
     } else {
         return output;
