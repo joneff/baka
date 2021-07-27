@@ -1,11 +1,15 @@
 {
   "name": "@joneff/baka",
-  "version": "0.5.1",
   "description": "Dead stupid sass inline importer (inliner)",
+  "version": "0.5.1",
   "author": "Ivan Zhekov <joneff@gmail.com>",
-  "repository": "joneff/baka",
-  "bugs": "https://github.com/joneff/baka/issues",
-  "license": "ISC",
+  "license": "MIT",
+  "keywords": [
+    "sass",
+    "inliner",
+    "importer",
+    "inline importer"
+  ],
   "main": "index.js",
   "files": [
     "index.js"
@@ -13,29 +17,44 @@
   "directories": {
     "test": "test"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joneff/baka.git"
+  },
+  "bugs": {
+    "url": "https://github.com/joneff/baka/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "bootstrap": "npm ci && npm run init-tests",
-    "ci": "npm run lint && npm run test",
+    "bootstrap": "npm run init-tests",
+    "eslint": "eslint **/*.js",
     "init-tests": "cd test && npm ci",
-    "lint": "eslint **/*.js",
     "test": "mocha",
-    "preversion": "npm run ci",
-    "postversion": "git push && git push --tags"
+    "mocha-dots": "mocha --reporter dot",
+    "semantic-release": "semantic-release"
   },
   "dependencies": {
     "@joneff/sass-import-resolver": "^0.3.1"
   },
   "devDependencies": {
-    "eslint": "^6.8.0",
-    "mocha": "^6.2.3"
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "@commitlint/core": "^11.0.0",
+    "@semantic-release/changelog": "^5.0.0",
+    "@semantic-release/git": "^9.0.0",
+    "eslint": "^7.31.0",
+    "husky": "^4.3.8",
+    "mocha": "^9.0.3",
+    "postcss": "^8.0.0",
+    "semantic-release": "^17.4.4"
   },
-  "publishConfig": {
-    "access": "public"
-  },
-  "keywords": [
-    "sass",
-    "inliner",
-    "importer",
-    "inline importer"
-  ]
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run eslint",
+      "pre-push": "npm run eslint && npm run mocha-dots",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  }
 }
