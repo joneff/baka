@@ -12,7 +12,8 @@
   ],
   "main": "index.js",
   "files": [
-    "index.js"
+    "index.js",
+    "src/"
   ],
   "directories": {
     "test": "test"
