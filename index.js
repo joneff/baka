@@ -1,74 +1,57 @@
 const fs = require('fs');
 const path = require('path');
+const merge = require('lodash.merge');
 
-const importResolver = require('@joneff/sass-import-resolver');
+const { parse } = require('./src/parse.js');
+const { replacePathVariables } = require('./src/templated-path.js');
 
-const reImport = /^[ \t]*@import\s+["']?(.*?)["']?;?$/gm;
+/** @typedef { import('./src/types').BakaOptions } BakaOptions */
+
 const importedFiles = new Set();
 const importedPaths = [];
-const process_cwd = process.cwd(); // eslint-disable-line camelcase
+const cwd = process.cwd();
 
-
-const parse = (url, options) => {
-
-    let root = options.root;
-
-    if (importedFiles.has( url )) {
-        return [
-            `// #region @import ${url.replace(process_cwd, '').replace(/\\/g, '/')}`,
-            '// File already imported_once. Skipping output.',
-            '// #endregion'
-        ].join('\n');
-    }
-
-    const buffer = fs.readFileSync(url, 'utf8');
-    let output = '';
-
-    importedPaths.push(path.dirname( url ));
-    importedFiles.add( url );
-
-    if (root === true) {
-        output = [
-            '// This file is auto-generated. Do not edit!',
-            `// baka:source ${url.replace(process_cwd, '').replace(/\\/g, '/')}}`,
-            '\n'
-        ].join('\n');
-    }
-
-    output += buffer.replace(reImport, (match, file) => {
-        return importReplacer(match, file, options);
-    });
-
-    importedPaths.pop();
-
-    return output;
+/** @type BakaOptions */
+const defaults = {
+    cwd,
+    root: true,
+    output: {
+        path: path.join(cwd, 'dist'),
+        filename: '[name]-flat[ext]'
+    },
+    importedFiles,
+    importedPaths
 };
 
-const importReplacer = (match, file, options) => { // eslint-disable-line no-unused-vars
-    const url = importResolver.resolve( file, { prev: importedPaths[ importedPaths.length - 1 ], nodeModules: options.nodeModules } );
-    let output = [];
+/**
+ * @param {BakaOptions} options
+ */
+function render( options ) {
+    const opts = merge( {}, defaults, options );
+    let result = '';
 
-    output.push(`// #region ${match} -> ${url.replace(process_cwd, '').replace(/\\/g, '/')}`);
-    output.push( parse( url, { ...options, root: false } ) );
-    output.push('// #endregion');
+    opts.importedFiles.clear();
 
-    return output.join('\n');
-};
+    result = parse( opts );
 
-const compile = (file, outFile, options) => { // eslint-disable-line consistent-return
-    importedFiles.clear();
-    const output = parse(file, { ...options, root: true });
+    return result;
+}
 
-    if (outFile) {
-        let dest = path.dirname(outFile);
-        fs.mkdirSync(dest, { recursive: true });
-        fs.writeFileSync(outFile, output);
-    } else {
-        return output;
-    }
-};
+/**
+ * @param {BakaOptions} options
+ */
+function build( options ) {
+    const opts = merge( {}, defaults, options );
+    const output = opts.output;
+    let outFile = path.resolve( output.path, replacePathVariables(output.filename, opts.file) );
+    let result = '';
+
+    result = render( opts );
+
+    fs.mkdirSync(output.path, { recursive: true });
+    fs.writeFileSync(outFile, result);
+}
 
 
-module.exports = {
-    compile
-};
+module.exports.build = build;
+module.exports.render = render;

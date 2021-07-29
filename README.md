@@ -10,25 +10,62 @@ npm install @joneff/baka --save-dev
 
 ## Basic Usage
 
-```javascript
+```js
 const baka = require('@joneff/baka');
 
-let src = '/path/to/src.scss';
-let dest = '/path/to/dest.scss';
+let file = '/path/to/file.scss';
 
-baka.compile(src, dest);
+
+// Basic usage
+baka.render({ file }); // returns the result of compilation
+baka.build({ file }); // writes the result of compilation to /dist
+
+// Advance usage (for build)
+const path = require('path');
+
+baka.build({
+    file: file,
+    output: {
+        path: path.resolve( __dirname, 'dist/flat' ),
+        filename: 'flat-[name].scss'
+    }
+});
 ```
 
 ## API
 
-The api has one method only.
+The api is modeled after sass js api with some inspiration from webpack.
 
-### resolve()
+### render
 
-* Signature: `function resolve( file: String ) : String`
-* Signature: `function resolve( file: String, outFile: String ) : void`
+`render( options: BakaOptions ) : String`
 
-`file` is required. `outFile` is optional and if omitted, the flattened content will be returned.
+Synchronously compiles a file to inline its imports. If it succeeds, it returns the result as a string. It takes an [`options` object](#options), which must have [`file` key](#options.file) set.
+
+### build
+
+`build( options: BakaOptions ) : void`
+
+Internally calls [render](#render) and if successful, writes the result to the file system.
+
+### options
+
+Controls how files are loaded and output. There are a handful of options, but not all matter all the time. Here are the most important ones:
+
+#### options.file
+
+`file: string`
+
+Path to the file to compile.
+
+#### options.output
+
+`output: OutputOptions`
+
+A set of options instructing baka on how and where it should output the result of compilation. Similar to [webpack output configuration](https://webpack.js.org/configuration/output), but only supports `path` and `filename`.
+
+* `path` is the output directory as absolute path. Defaults to `path.join(process.cwd(), 'dist')`.
+* `filename` determines the name of the output file. It suports the following [template strings](https://webpack.js.org/configuration/output/#template-strings): `[file]`, `[path]`, `[base]`, `[name]` and `[ext]` and they have the same meaning as with webpack. Defaults to `[name]-flat[ext]`.
 
 ## Bugs
 

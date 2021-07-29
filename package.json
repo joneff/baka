@@ -36,7 +36,8 @@
     "semantic-release": "semantic-release"
   },
   "dependencies": {
-    "@joneff/sass-import-resolver": "^0.3.1"
+    "@joneff/sass-import-resolver": "^1.0.0",
+    "lodash.merge": "^4.6.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
