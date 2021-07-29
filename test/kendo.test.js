@@ -31,14 +31,14 @@ suite('kendo', () => {
 
             del( flat, _srcOut, _flatOut );
 
-            baka.compile(src, flat);
+            baka.build({ file: src, output: { path: dist, filename: 'kendo-flat.scss' } });
 
             await Promise.all([
                 buildSass(_src, dist),
                 buildSass(_flat, dist)
             ]);
 
-            assert.equal( fs.readFileSync(_srcOut, 'utf-8').length, fs.readFileSync(_flatOut, 'utf-8').length );
+            assert.strictEqual( fs.readFileSync(_srcOut, 'utf-8').length, fs.readFileSync(_flatOut, 'utf-8').length );
         });
 
     });
