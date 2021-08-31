@@ -1,7 +1,7 @@
 {
   "private": true,
   "devDependencies": {
-    "@progress/kendo-theme-default": "^4.18.2",
+    "@progress/kendo-theme-default": "^4.40.0",
     "bootstrap": "^4.5.0",
     "bulma": "^0.8.2",
     "foundation-sites": "^6.6.3",
