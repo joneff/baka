@@ -1,7 +1,7 @@
 {
   "name": "@joneff/baka",
   "description": "Dead stupid sass inline importer (inliner)",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "author": "Ivan Zhekov <joneff@gmail.com>",
   "license": "MIT",
   "keywords": [

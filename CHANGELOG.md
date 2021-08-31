@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/joneff/baka/compare/v1.0.1...v1.1.0) (2021-08-31)
+
+
+### Features
+
+* add baka annotations to allow skip and ignore files ([953f4e1](https://github.com/joneff/baka/commit/953f4e1b93bfb60eca55c876530ec44cff0e8710))
+
 ## [1.0.1](https://github.com/joneff/baka/compare/v1.0.0...v1.0.1) (2021-07-29)
 
 
