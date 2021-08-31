@@ -4,20 +4,36 @@ const importResolver = require('@joneff/sass-import-resolver');
 
 /** @typedef { import('./types').BakaOptions } BakaOptions */
 
-const RE_IMPORT = /^[ \t]*@import\s+["']?(.*?)["']?;?$/gm;
+const RE_IMPORT = /^[ \t]*@import[ \t]+["']?(.*?)["']?;[ \t]*(?:\/\/)?[ \t]*(.*?)?$/gm;
+
+function normalizePath(url, cwd) {
+    let result = path.posix.resolve(url);
+
+    if (typeof cwd === 'string') {
+        result = result.replace(`${cwd}/`, '');
+    }
+
+    return result;
+}
 
 /**
  * @param {String} matchedLine
  * @param {BakaOptions} context
  */
-function importReplacer( matchedLine, matchedPath, context ) {
+function importReplacer( matchedLine, matchedPath, annotation, context ) {
     const {
         cwd,
         nodeModules,
-        importedPaths
+        importedPaths,
+        ignoredFiles
     } = context;
     const result = [];
     let url;
+    let directive;
+
+    if (typeof annotation === 'string' && annotation.startsWith('baka:')) {
+        directive = annotation.substring(5);
+    }
 
     url = importResolver.resolve({
         file: matchedPath,
@@ -25,8 +41,21 @@ function importReplacer( matchedLine, matchedPath, context ) {
         nodeModules: nodeModules
     });
 
-    result.push(`// #region ${matchedLine} -> ${url.replace(cwd, '').replace(/\\/g, '/')}`);
-    result.push( parse( { ...context, root: false, file: url } ) );
+    if (ignoredFiles.has(url)) {
+        return matchedLine;
+    }
+
+    if (directive === 'skip') {
+        return matchedLine;
+    }
+
+    if (directive === 'ignore') {
+        ignoredFiles.add(url);
+        return matchedLine;
+    }
+
+    result.push(`// #region ${matchedLine} -> ${normalizePath( url, cwd )}`);
+    result.push( parse( { ...context, file: url } ) );
     result.push('// #endregion');
 
     return result.join('\n');
@@ -38,19 +67,18 @@ function importReplacer( matchedLine, matchedPath, context ) {
 function parse( options ) {
 
     let {
-        cwd,
         file,
-        root,
         importedFiles,
-        importedPaths
+        importedPaths,
+        ignoredFiles
     } = options;
 
+    if (ignoredFiles.has( file )) {
+        return '';
+    }
+
     if (importedFiles.has( file )) {
-        return [
-            `// #region @import ${file.replace(cwd, '').replace(/\\/g, '/')}`,
-            '// File already imported_once. Skipping output.',
-            '// #endregion'
-        ].join('\n');
+        return '// File already imported_once. Skipping output.';
     }
 
     const buffer = fs.readFileSync(file, 'utf8');
@@ -59,16 +87,8 @@ function parse( options ) {
     importedPaths.push(path.dirname( file ));
     importedFiles.add( file );
 
-    if (root === true) {
-        output = [
-            '// This file is auto-generated. Do not edit!',
-            `// baka:source ${file.replace(cwd, '').replace(/\\/g, '/')}`,
-            '\n'
-        ].join('\n');
-    }
-
-    output += buffer.replace(RE_IMPORT, ( match, filePath ) => {
-        return importReplacer( match, filePath, options );
+    output += buffer.replace(RE_IMPORT, ( match, filePath, annotation ) => {
+        return importReplacer( match, filePath, annotation, options );
     });
 
     importedPaths.pop();

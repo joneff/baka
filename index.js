@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const glob = require('glob');
 const merge = require('lodash.merge');
 
 const { parse } = require('./src/parse.js');
@@ -9,6 +10,8 @@ const { replacePathVariables } = require('./src/templated-path.js');
 
 const importedFiles = new Set();
 const importedPaths = [];
+const ignoredFiles = new Set();
+const ignorePatterns = [];
 const cwd = process.cwd();
 
 /** @type BakaOptions */
@@ -20,7 +23,9 @@ const defaults = {
         filename: '[name]-flat[ext]'
     },
     importedFiles,
-    importedPaths
+    importedPaths,
+    ignoredFiles,
+    ignorePatterns
 };
 
 /**
@@ -28,11 +33,25 @@ const defaults = {
  */
 function render( options ) {
     const opts = merge( {}, defaults, options );
-    let result = '';
+    let result = [
+        '// This file is auto-generated. Do not edit!',
+        `// baka:source ${path.posix.resolve(opts.file).replace(`${opts.cwd}/`)}`,
+        '\n'
+    ].join('\n');
 
     opts.importedFiles.clear();
+    opts.ignoredFiles.clear();
 
-    result = parse( opts );
+    const ignorePatterns = opts.ignorePatterns.join(',');
+    const ignoredFiles = ignorePatterns.length > 0
+        ? glob.sync( ignorePatterns, { cwd: opts.cwd } )
+        : [];
+
+    ignoredFiles.forEach(file => {
+        opts.ignoredFiles.add(path.resolve(file));
+    });
+
+    result += parse( opts );
 
     return result;
 }

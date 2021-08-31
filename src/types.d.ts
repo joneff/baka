@@ -5,7 +5,8 @@ export type BakaOptions = {
     output: OutputOptions,
     importedFiles: Set<string>,
     importedPaths: Array<string>
-    root: boolean
+    ignoredFiles: Set<string>,
+    ignorePatterns: Array<string>
 }
 
 export type OutputOptions = {
