@@ -13,7 +13,7 @@ const dist = path.join(__dirname, 'dist');
 const local = path.join(__dirname, 'local');
 
 
-suite('milligram', () => {
+suite.skip('milligram', () => {
 
     before(() => {
         fs.mkdirpSync(dist);
