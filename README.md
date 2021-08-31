@@ -75,7 +75,7 @@ I am not really a fan of complex regex for simple tasks, like parsing `@import`.
  /**/  @import       "file.css"; /**/ //
 ```
 
-Yet, baka will not match it. So you could say that there are intended bugs. Speaking of which, [uikit] can not be flattened right now.
+Yet, baka will not match it. So you could say that there are intended bugs. Speaking of which, [uikit] and any framework that doesn't terminate line ends with `;` will not be flattened.
 
 ## Contributing?
 
