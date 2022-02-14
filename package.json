@@ -49,7 +49,7 @@
     "@commitlint/core": "^16.2.1",
     "@semantic-release/changelog": "^5.0.0",
     "@semantic-release/git": "^9.0.0",
-    "eslint": "^7.31.0",
+    "eslint": "^8.9.0",
     "glob": "^7.1.6",
     "husky": "^4.3.8",
     "mocha": "^9.0.3",
