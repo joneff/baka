@@ -15,9 +15,6 @@
     "index.js",
     "src/"
   ],
-  "directories": {
-    "test": "test"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/joneff/baka.git"
@@ -25,35 +22,36 @@
   "bugs": {
     "url": "https://github.com/joneff/baka/issues"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
-    "bootstrap": "npm run init-tests",
     "eslint": "eslint **/*.js",
-    "init-tests": "cd test && npm ci",
-    "test": "mocha",
-    "mocha-dots": "mocha --reporter dot",
+    "test": "jest",
     "semantic-release": "semantic-release"
   },
   "dependencies": {
     "@joneff/sass-import-resolver": "^1.0.0",
+    "glob": "^7.2.3",
     "lodash.merge": "^4.6.2"
-  },
-  "peerDependencies": {
-    "glob": "^7.1.6"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.0.3",
     "@commitlint/config-conventional": "^17.0.3",
     "@commitlint/core": "^17.0.3",
+    "@progress/kendo-theme-default": "^5.7.0",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
+    "@types/jest": "^29.0.0",
+    "bootstrap": "^5.2.0",
+    "bulma": "^0.9.4",
     "eslint": "^8.9.0",
-    "glob": "^7.1.6",
+    "foundation-sites": "^6.7.5",
+    "fs-extra": "^10.1.0",
     "husky": "^4.3.8",
-    "mocha": "^10.0.0",
-    "semantic-release": "^19.0.5"
+    "jest": "^29.0.2",
+    "materialize-css": "^1.0.0",
+    "milligram": "^1.4.1",
+    "sass-embedded": "^1.54.8",
+    "semantic-release": "^19.0.5",
+    "uikit": "^3.15.6"
   },
   "husky": {
     "hooks": {

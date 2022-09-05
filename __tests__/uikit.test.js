@@ -1,31 +1,27 @@
-const fs = require('fs-extra');
+const fs = require('fs');
 const path = require('path');
 const assert = require('assert');
-const suite = require('mocha').suite;
-const before = require('mocha').before;
-const context = require('mocha').describe;
-const test = require('mocha').test;
-const { del, buildSass } = require('./index');
+
 const baka = require('../index');
+const { mkdir, del, sassBuild } = require('../lib/utils');
 
-const node_modules = path.join(__dirname, 'node_modules'); // eslint-disable-line camelcase
 const dist = path.join(__dirname, 'dist');
-const local = path.join(__dirname, 'local');
+const fixtures = path.join(__dirname, '__fixtures__');
 
 
-suite.skip('uikit', () => {
+describe('uikit', () => {
 
-    before(() => {
-        fs.mkdirpSync(dist);
+    beforeAll(() => {
+        mkdir(dist);
     });
 
-    context('baka:full', () => {
+    describe('baka:full', () => {
 
-        test('source vs flat', async () => { // eslint-disable-line space-before-function-paren
-            let src = path.join(node_modules, 'uikit/src/scss/uikit.scss');
+        test('source vs flat', () => {
+            let src = path.join('node_modules', 'uikit/src/scss/uikit.scss');
             let flat = path.join(dist, 'uikit-flat.scss');
-            let _src = path.join(local, 'uikit.scss');
-            let _flat = path.join(local, 'uikit-flat.scss');
+            let _src = path.join(fixtures, 'uikit.scss');
+            let _flat = path.join(fixtures, 'uikit-flat.scss');
             let _srcOut = path.join(dist, 'uikit.css');
             let _flatOut = path.join(dist, 'uikit-flat.css');
 
@@ -33,10 +29,8 @@ suite.skip('uikit', () => {
 
             baka.build({ file: src, output: { path: dist } });
 
-            await Promise.all([
-                buildSass(_src, dist),
-                buildSass(_flat, dist)
-            ]);
+            sassBuild(_src, _srcOut);
+            sassBuild(_flat, _flatOut);
 
             assert.strictEqual( fs.readFileSync(_srcOut, 'utf-8').length, fs.readFileSync(_flatOut, 'utf-8').length );
         });
