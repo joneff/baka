@@ -1,4 +1,4 @@
-export type BakaOptions = {
+declare type BakaOptions = {
     cwd: string,
     nodeModules: string,
     file: string,
@@ -9,12 +9,12 @@ export type BakaOptions = {
     ignorePatterns: Array<string>
 }
 
-export type OutputOptions = {
+declare type OutputOptions = {
     filename: string,
     path: string
 }
 
-export type PathData = {
+declare type PathData = {
     file: string,
     path: string,
     base: string,
