@@ -23,9 +23,11 @@
     "url": "https://github.com/joneff/baka/issues"
   },
   "scripts": {
+    "lint": "npm run eslint",
     "eslint": "eslint **/*.js",
     "test": "jest",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "update": "npx npm-check-updates --upgrade"
   },
   "dependencies": {
     "@joneff/sass-import-resolver": "^1.0.0",
@@ -56,7 +58,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "npm run eslint",
-      "pre-push": "npm run eslint && npm run mocha-dots",
+      "pre-push": "npm run eslint && npm run test",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   }
