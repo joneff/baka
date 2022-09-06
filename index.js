@@ -1,3 +1,5 @@
+/// <reference path="./types/index.d.ts" />
+
 const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
@@ -6,36 +8,37 @@ const merge = require('lodash.merge');
 const { parse } = require('./src/parse.js');
 const { replacePathVariables } = require('./src/templated-path.js');
 
-/** @typedef { import('./src/types').BakaOptions } BakaOptions */
-
 const importedFiles = new Set();
 const importedPaths = [];
 const ignoredFiles = new Set();
 const ignorePatterns = [];
-const cwd = process.cwd();
+const CWD = process.cwd();
 
-/** @type BakaOptions */
-const defaults = {
-    cwd,
+/** @type {SharedOptions} */
+const sharedOptions = {
+    cwd: CWD,
     root: true,
-    output: {
-        path: path.join(cwd, 'dist'),
-        filename: '[name]-flat[ext]'
-    },
     importedFiles,
     importedPaths,
     ignoredFiles,
     ignorePatterns
 };
+/** @type {CompileOptions} */
+const compileOptions = merge( {}, sharedOptions );
+
+/** @type {BuildOptions} */
+const buildOptions = merge( {}, sharedOptions );
 
 /**
- * @param {BakaOptions} options
+ * @param {string} file
+ * @param {CompileOptions=} options
  */
-function render( options ) {
-    const opts = merge( {}, defaults, options );
+function compile( file, options ) {
+    const opts = merge( {}, compileOptions, options );
+    const cwd = path.posix.resolve(opts.cwd || CWD);
     let result = [
         '// This file is auto-generated. Do not edit!',
-        `// baka:source ${path.posix.resolve(opts.file).replace(`${opts.cwd}/`)}`,
+        `// baka:source ${path.posix.resolve(file).replace(`${cwd}/`,'')}`,
         '\n'
     ].join('\n');
 
@@ -44,33 +47,81 @@ function render( options ) {
 
     const ignorePatterns = opts.ignorePatterns.join(',');
     const ignoredFiles = ignorePatterns.length > 0
-        ? glob.sync( ignorePatterns, { cwd: opts.cwd } )
+        ? glob.sync( ignorePatterns, { cwd: cwd } )
         : [];
 
     ignoredFiles.forEach(file => {
-        opts.ignoredFiles.add(path.resolve(file));
+        opts.ignoredFiles.add(path.posix.resolve(file));
     });
 
-    result += parse( opts );
+    result += parse( file, opts );
 
-    return result;
+    return {
+        content: result,
+        loadedUrls: Array.from(opts.importedFiles)
+    };
 }
 
 /**
- * @param {BakaOptions} options
+ * @param {string} file
+ * @param {string} outFile
+ * @param {BuildOptions=} options
  */
-function build( options ) {
-    const opts = merge( {}, defaults, options );
-    const output = opts.output;
-    let outFile = path.resolve( output.path, replacePathVariables(output.filename, opts.file) );
-    let result = '';
+function build( file, outFile, options ) {
+    const opts = merge( {}, buildOptions, options );
+    const cwd = path.posix.resolve(opts.cwd || CWD);
 
-    result = render( opts );
+    // eslint-disable-next-line no-param-reassign
+    file = path.posix.resolve( cwd, file );
+    // eslint-disable-next-line no-param-reassign
+    outFile = path.posix.resolve( cwd, outFile );
 
-    fs.mkdirSync(output.path, { recursive: true });
-    fs.writeFileSync(outFile, result);
+    const result = compile( file, opts );
+
+    fs.mkdirSync(path.dirname(outFile), { recursive: true });
+    fs.writeFileSync(outFile, result.content);
+}
+
+/**
+ * @param {string | string[]} fileOrGlob
+ * @param {OutputOptions} output
+ * @param {BuildFilesOptions=} options
+ */
+function buildFiles( fileOrGlob, output = {}, options ) {
+    const opts = merge( {}, buildOptions, options );
+    const cwd = path.posix.resolve(opts.cwd || CWD);
+
+    // eslint-disable-next-line no-param-reassign
+    output = {
+        path: path.posix.resolve(cwd, output.path || 'dist'),
+        filename: output.filename || '[name]-flat[ext]'
+    };
+
+    if (!Array.isArray(fileOrGlob)) {
+        // eslint-disable-next-line no-param-reassign
+        fileOrGlob = [ fileOrGlob ];
+    }
+
+    fileOrGlob.forEach(entry => {
+        const files = glob.sync(entry, { cwd: cwd });
+
+        files.forEach(file => {
+            // eslint-disable-next-line no-param-reassign
+            file = path.posix.resolve(cwd, file);
+
+            const outFile = path.resolve(
+                output.path,
+                replacePathVariables(output.filename, file)
+            );
+
+            build( file, outFile, opts );
+        });
+    });
 }
 
 
-module.exports.build = build;
-module.exports.render = render;
+module.exports = {
+    build,
+    buildFiles,
+    compile
+};
