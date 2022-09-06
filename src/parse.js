@@ -2,8 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const importResolver = require('@joneff/sass-import-resolver');
 
-/** @typedef { import('./types').BakaOptions } BakaOptions */
-
 const RE_IMPORT = /^[ \t]*@import[ \t]+["']?(.*?)["']?;[ \t]*(?:\/\/)?[ \t]*(.*?)?$/gm;
 
 function normalizePath(url, cwd) {
@@ -22,11 +20,11 @@ function normalizePath(url, cwd) {
  */
 function importReplacer( matchedLine, matchedPath, annotation, context ) {
     const {
-        cwd,
-        nodeModules,
         importedPaths,
         ignoredFiles
     } = context;
+    const cwd = path.posix.resolve(context.cwd || process.cwd());
+    const nodeModules = path.posix.resolve( cwd, context.nodeModules || 'node_modules');
     const result = [];
     let url;
     let directive;
@@ -38,6 +36,7 @@ function importReplacer( matchedLine, matchedPath, annotation, context ) {
     url = importResolver.resolve({
         file: matchedPath,
         prev: importedPaths[ importedPaths.length - 1 ],
+        includePaths: [ nodeModules ],
         nodeModules: nodeModules
     });
 
@@ -55,7 +54,7 @@ function importReplacer( matchedLine, matchedPath, annotation, context ) {
     }
 
     result.push(`// #region ${matchedLine} -> ${normalizePath( url, cwd )}`);
-    result.push( parse( { ...context, file: url } ) );
+    result.push( parse( url, context ) );
     result.push('// #endregion');
 
     return result.join('\n');
@@ -64,10 +63,9 @@ function importReplacer( matchedLine, matchedPath, annotation, context ) {
 /**
  * @param {BakaOptions} options
  */
-function parse( options ) {
+function parse( file, options ) {
 
-    let {
-        file,
+    const {
         importedFiles,
         importedPaths,
         ignoredFiles
@@ -80,7 +78,6 @@ function parse( options ) {
     if (importedFiles.has( file )) {
         return '// File already imported_once. Skipping output.';
     }
-
     const buffer = fs.readFileSync(file, 'utf8');
     let output = '';
 
@@ -96,4 +93,6 @@ function parse( options ) {
     return output;
 }
 
-module.exports.parse = parse;
+module.exports = {
+    parse
+};
