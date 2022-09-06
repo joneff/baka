@@ -27,7 +27,7 @@ describe('kendo', () => {
 
             del( flat, _srcOut, _flatOut );
 
-            baka.build({ file: src, output: { path: dist, filename: 'kendo-flat.scss' } });
+            baka.build(src, flat);
 
             sassBuild(_src, _srcOut);
             sassBuild(_flat, _flatOut);

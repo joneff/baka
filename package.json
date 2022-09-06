@@ -26,7 +26,7 @@
   },
   "scripts": {
     "lint": "npm run eslint",
-    "eslint": "eslint **/*.js",
+    "eslint": "eslint \"**/*.js\"",
     "test": "jest",
     "semantic-release": "semantic-release",
     "update": "npx npm-check-updates --upgrade"
