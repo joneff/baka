@@ -4,11 +4,8 @@
 import { compile } from './compile';
 import { build, buildFiles } from './build';
 
-declare type Baka = {
-    compile: typeof compile;
-    build: typeof build;
-    buildFiles: typeof buildFiles;
-}
-
-export = Baka;
-export as namespace Baka;
+export default Baka = {
+    compile,
+    build,
+    buildFiles
+};
