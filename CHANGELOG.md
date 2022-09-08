@@ -1,3 +1,33 @@
+# [2.0.0](https://github.com/joneff/baka/compare/v1.1.0...v2.0.0) (2022-09-08)
+
+
+### Features
+
+* streamline api ([a807eda](https://github.com/joneff/baka/commit/a807edacfbfe9d25cc5ee619b561953c988c60a6))
+
+
+### BREAKING CHANGES
+
+* rename `baka.render` to `baka.compile`
+
+```js
+// old
+baka.render( options: BakaOptions );
+
+// new
+baka.compile( file: string, options: CompileOptions );
+```
+* change `baka.build` signature
+
+```js
+// old
+baka.build( options: BakaOptions );
+
+// new
+baka.compile( file: string, outFile: string, options: BuildOptions );
+```
+* remove baka lite
+
 # [1.1.0](https://github.com/joneff/baka/compare/v1.0.1...v1.1.0) (2021-08-31)
 
 
