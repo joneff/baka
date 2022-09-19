@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/joneff/baka/compare/v2.0.0...v2.0.1) (2022-09-19)
+
+
+### Bug Fixes
+
+* do not use extra path.posix when not needed ([068e4b2](https://github.com/joneff/baka/commit/068e4b223a69dccf2d388e01914b052040969831))
+
 # [2.0.0](https://github.com/joneff/baka/compare/v1.1.0...v2.0.0) (2022-09-08)
 
 
