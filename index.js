@@ -35,10 +35,10 @@ const buildOptions = merge( {}, sharedOptions );
  */
 function compile( file, options ) {
     const opts = merge( {}, compileOptions, options );
-    const cwd = path.posix.resolve(opts.cwd || CWD);
+    const cwd = path.resolve(opts.cwd || CWD);
     let result = [
         '// This file is auto-generated. Do not edit!',
-        `// baka:source ${path.posix.resolve(file).replace(`${cwd}/`,'')}`,
+        `// baka:source ${path.resolve(file).replace(`${cwd}/`,'')}`,
         '\n'
     ].join('\n');
 
@@ -51,7 +51,7 @@ function compile( file, options ) {
         : [];
 
     ignoredFiles.forEach(file => {
-        opts.ignoredFiles.add(path.posix.resolve(file));
+        opts.ignoredFiles.add(path.resolve(file));
     });
 
     result += parse( file, opts );
@@ -69,12 +69,12 @@ function compile( file, options ) {
  */
 function build( file, outFile, options ) {
     const opts = merge( {}, buildOptions, options );
-    const cwd = path.posix.resolve(opts.cwd || CWD);
+    const cwd = path.resolve(opts.cwd || CWD);
 
     // eslint-disable-next-line no-param-reassign
-    file = path.posix.resolve( cwd, file );
+    file = path.resolve( cwd, file );
     // eslint-disable-next-line no-param-reassign
-    outFile = path.posix.resolve( cwd, outFile );
+    outFile = path.resolve( cwd, outFile );
 
     const result = compile( file, opts );
 
@@ -89,11 +89,11 @@ function build( file, outFile, options ) {
  */
 function buildFiles( fileOrGlob, output = {}, options ) {
     const opts = merge( {}, buildOptions, options );
-    const cwd = path.posix.resolve(opts.cwd || CWD);
+    const cwd = path.resolve(opts.cwd || CWD);
 
     // eslint-disable-next-line no-param-reassign
     output = {
-        path: path.posix.resolve(cwd, output.path || 'dist'),
+        path: path.resolve(cwd, output.path || 'dist'),
         filename: output.filename || '[name]-flat[ext]'
     };
 
@@ -107,7 +107,7 @@ function buildFiles( fileOrGlob, output = {}, options ) {
 
         files.forEach(file => {
             // eslint-disable-next-line no-param-reassign
-            file = path.posix.resolve(cwd, file);
+            file = path.resolve(cwd, file);
 
             const outFile = path.resolve(
                 output.path,
