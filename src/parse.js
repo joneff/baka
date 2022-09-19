@@ -23,8 +23,8 @@ function importReplacer( matchedLine, matchedPath, annotation, context ) {
         importedPaths,
         ignoredFiles
     } = context;
-    const cwd = path.posix.resolve(context.cwd || process.cwd());
-    const nodeModules = path.posix.resolve( cwd, context.nodeModules || 'node_modules');
+    const cwd = path.resolve(context.cwd || process.cwd());
+    const nodeModules = path.resolve( cwd, context.nodeModules || 'node_modules');
     const result = [];
     let url;
     let directive;
