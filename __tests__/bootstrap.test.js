@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const assert = require('assert');
 
-const baka = require('../index');
+const baka = require('../dist/index');
 const { mkdir, del, sassBuild } = require('../lib/utils');
 
 const dist = path.join(__dirname, 'dist');
