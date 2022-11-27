@@ -1,3 +1,11 @@
+# [2.1.0](https://github.com/joneff/baka/compare/v2.0.1...v2.1.0) (2022-11-27)
+
+
+### Features
+
+* use esbuild ([09f673a](https://github.com/joneff/baka/commit/09f673a97497f3e47f1f19df25f3ece35a01e5ba))
+* use typescript ([ae5366e](https://github.com/joneff/baka/commit/ae5366e89d2d1d43a60e30c5543e57a2a7ced661))
+
 ## [2.0.1](https://github.com/joneff/baka/compare/v2.0.0...v2.0.1) (2022-09-19)
 
 
