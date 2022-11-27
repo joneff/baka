@@ -33,8 +33,7 @@
   },
   "dependencies": {
     "@joneff/sass-import-resolver": "^1.0.0",
-    "glob": "^8.0.3",
-    "lodash.merge": "^4.6.2"
+    "glob": "^8.0.3"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.0.3",

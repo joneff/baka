@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
-const merge = require('lodash.merge');
+const merge = Object.assign;
 
 const { parse } = require('./src/parse.js');
 const { replacePathVariables } = require('./src/templated-path.js');
