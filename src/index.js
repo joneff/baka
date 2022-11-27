@@ -1,12 +1,12 @@
-/// <reference path="./types/index.d.ts" />
+/// <reference path="../types/index.d.ts" />
 
 const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
 const merge = Object.assign;
 
-const { parse } = require('./src/parse.js');
-const { replacePathVariables } = require('./src/templated-path.js');
+const { parse } = require('./parse.js');
+const { replacePathVariables } = require('./templated-path.js');
 
 const importedFiles = new Set();
 const importedPaths = [];

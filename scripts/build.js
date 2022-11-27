@@ -3,10 +3,7 @@
 const argsParser = require('yargs-parser');
 const esbuild = require('esbuild');
 const glob = require('glob');
-const entryPoints = [
-    'index.js',
-    ...glob.sync('src/**/*.js')
-];
+const entryPoints = glob.sync('src/**/*.js');
 
 const argv = argsParser(process.argv.slice(2), {
     alias: {
