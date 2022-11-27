@@ -66,5 +66,17 @@
         "space-before-function-paren": [ "error", "never" ],
         "space-infix-ops": [ "error", { "int32Hint": false } ],
         "yoda": [ "error", "never", { "exceptRange": true } ]
-    }
+    },
+    "overrides": [
+        {
+            "files": [ "*.ts" ],
+            "parser": "@typescript-eslint/parser"
+        },
+        {
+            "files": [ "*.d.ts" ],
+            "rules": {
+                "no-unused-vars": "off"
+            }
+        }
+    ]
 }

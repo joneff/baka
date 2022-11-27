@@ -1,14 +1,16 @@
-const fs = require('fs');
-const path = require('path');
-const importResolver = require('@joneff/sass-import-resolver');
+import fs from 'fs';
+import path from 'path';
+import importResolver from '@joneff/sass-import-resolver';
+
+import { SharedOptions } from '../types';
 
 const RE_IMPORT = /^[ \t]*@import[ \t]+["']?(.*?)["']?;[ \t]*(?:\/\/)?[ \t]*(.*?)?$/gm;
 
-function normalizePath(url, cwd) {
-    let result = path.posix.resolve(url);
+function normalizePath( url: string, cwd: string ) {
+    let result = path.posix.resolve( url );
 
     if (typeof cwd === 'string') {
-        result = result.replace(`${cwd}/`, '');
+        result = result.replace( `${cwd}/`, '' );
     }
 
     return result;
@@ -18,14 +20,16 @@ function normalizePath(url, cwd) {
  * @param {String} matchedLine
  * @param {BakaOptions} context
  */
-function importReplacer( matchedLine, matchedPath, annotation, context ) {
+function importReplacer( matchedLine: string, matchedPath: string, annotation: string, context: SharedOptions ) {
     const {
         importedPaths,
         ignoredFiles
     } = context;
+
     const cwd = path.resolve(context.cwd || process.cwd());
     const nodeModules = path.resolve( cwd, context.nodeModules || 'node_modules');
-    const result = [];
+    const result : Array<string> = [];
+
     let url;
     let directive;
 
@@ -60,10 +64,7 @@ function importReplacer( matchedLine, matchedPath, annotation, context ) {
     return result.join('\n');
 }
 
-/**
- * @param {BakaOptions} options
- */
-function parse( file, options ) {
+export function parse( file: string, options: SharedOptions ) {
 
     const {
         importedFiles,
@@ -92,7 +93,3 @@ function parse( file, options ) {
 
     return output;
 }
-
-module.exports = {
-    parse
-};

@@ -1,17 +1,19 @@
-const path = require( 'path' );
+import path from 'path';
 const REGEXP = /\[([\w]+)\]/gi;
 
 
-/** @typedef { import('./types').PathData } PathData */
+import type { PathData } from '../types';
+
+// eslint-disable-next-line no-unused-vars
+type TemplateFunction = ( options: PathData ) => string;
 
 /**
  * @param {string} filePath path to file
  * @returns {PathData} parsed parts
  */
-function parsePath( filePath ) {
+function parsePath( filePath : string ) : PathData {
 
-    /** @type {PathData} */
-    const pathData = {};
+    const pathData : PathData = <PathData> {};
 
     pathData.file = filePath.startsWith('./') ? filePath.slice(2) : filePath;
     pathData.ext = path.extname( pathData.file );
@@ -27,18 +29,17 @@ function parsePath( filePath ) {
  * @param {string | PathData } filePath path to file or path data
  * @returns {string} the interpolated path
  */
-function replacePathVariables( template, filePath ) {
+export function replacePathVariables( template : string | TemplateFunction, filePath: string | PathData ) {
 
-    /** @type {Map<string, Function>} */
-    const replacements = new Map();
+    const replacements = new Map<string, Function>();
 
     let result = template;
-    let pathData = filePath;
+    let pathData = <PathData> filePath;
 
-    if (filePath) {
+    if (pathData) {
 
-        if (typeof filePath === 'string') {
-            pathData = parsePath(filePath);
+        if (typeof pathData === 'string') {
+            pathData = parsePath( pathData );
         }
 
         replacements.set('file', replacer(pathData.file));
@@ -48,15 +49,15 @@ function replacePathVariables( template, filePath ) {
         replacements.set('ext', replacer(pathData.ext, true));
     }
 
-    if (typeof template === 'function') {
-        result = result(filePath);
+    if (typeof result === 'function') {
+        result = <string> result(pathData);
     }
 
     result = result.replace( REGEXP, ( match, content ) => {
-        const replacer = replacements.get( content );
+        const _replacer = replacements.get( content );
 
-        if (replacer !== undefined) {
-            return replacer( content, result );
+        if (_replacer !== undefined) {
+            return _replacer( content, result );
         }
 
         return match;
@@ -65,9 +66,9 @@ function replacePathVariables( template, filePath ) {
     return result;
 }
 
-function replacer(value, allowEmpty) {
+function replacer(value: string | Function, allowEmpty?: boolean ) {
 
-    function fn(match, input) {
+    function fn(match: string, input: string) {
 
         if (typeof value === 'function') {
             value = value(); // eslint-disable-line no-param-reassign
@@ -87,5 +88,3 @@ function replacer(value, allowEmpty) {
 
     return fn;
 }
-
-module.exports.replacePathVariables = replacePathVariables;
