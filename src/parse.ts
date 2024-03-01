@@ -80,12 +80,15 @@ export function parse( file: string, options: SharedOptions ) {
         return '// File already imported_once. Skipping output.';
     }
     const buffer = fs.readFileSync(file, 'utf8');
+    // remove non-printing characters that can occur when reading a utf8-BOM file
+    const content = buffer.replace(/[\u200B-\u200D\uFEFF]/g, '');
+
     let output = '';
 
     importedPaths.push(path.dirname( file ));
     importedFiles.add( file );
 
-    output += buffer.replace(RE_IMPORT, ( match, filePath, annotation ) => {
+    output += content.replace(RE_IMPORT, ( match, filePath, annotation ) => {
         return importReplacer( match, filePath, annotation, options );
     });
 
